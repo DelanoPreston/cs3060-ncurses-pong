@@ -16,19 +16,12 @@ Ball::Ball() {
 
 void Ball::Init(int x, int y, int upperBound, int lowerBound){
     _x = x;
-    _xLast = x + 1;
     _y = y;
+    ResetPosition(x, y);
+    _xLast = x + 1;
     _yLast = y + 1;
     _upperBound = upperBound;
     _lowerBound = lowerBound;
-    _xDir = rand() % 2 + 1;
-    if (rand() % 2 == 0) {
-        _xDir = _xDir * -1;
-    }
-    _yDir = rand() % 2 + 1;
-    if (rand() % 2 == 0) {
-        _yDir = _yDir * -1;
-    }
 }
 
 Ball::Ball(const Ball& orig) {
@@ -38,8 +31,8 @@ Ball::~Ball() {
 }
 
 void Ball::Render() { 
-    mvaddstr(_yLast, _xLast, " ");
     mvaddstr(_y, _x, "*");
+    mvaddstr(_yLast, _xLast, " ");
 }
 
 void Ball::Move(float x, float y) {
@@ -56,11 +49,25 @@ void Ball::Move(float x, float y) {
 void Ball::BounceVertical() { _yDir = _yDir * -1; }
 void Ball::BounceHorizontal() { _xDir = _xDir * -1;}
 
+bool Ball::MovingLeft(){
+    if(_xDir < 0){
+        return true;
+    }
+    return false;
+}
 void Ball::ResetPosition(int x, int y){
     _xLast = _x;
     _yLast = _y;
     _x = x;
     _y = y;
+    _xDir = 1;
+    if (rand() % 2 == 0) {
+        _xDir = _xDir * -1;
+    }
+    _yDir = 1;
+    if (rand() % 2 == 0) {
+        _yDir = _yDir * -1;
+    }
 }
 
 int Ball::GetX() { return _x; }

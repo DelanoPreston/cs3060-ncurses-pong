@@ -25,6 +25,7 @@ public:
     virtual void Render();
     void BounceVertical();
     void BounceHorizontal();
+    bool MovingLeft();
     void ResetPosition(int x, int y);
     virtual int GetX();
     virtual int GetY();

@@ -43,7 +43,7 @@ void Game::Initialize() {
     curs_set(0);
     RenderBoard();
 
-    _gameBall.Init(53, 15, 1, _height + 1);
+    _gameBall.Init(45, 15, 2, _height);
     _userPaddle.Init(3, 10, _height, 3);
     _cpuPaddle.Init(_width-3, 10, _height, 3);
     _playing = true;
@@ -80,29 +80,39 @@ void Game::Loop() {
     
     if(_ballMoving){
         if(_ballTimer >= _ballMove){    
-            if(_gameBall.GetX() <= 5){
-                if(_gameBall.GetY() > _userPaddle.GetY() && _gameBall.GetY() < _userPaddle.GetY() + 6){
+            if(_gameBall.GetX() <= 1){
+                //give cpu player a point
+                _cpuScore = _cpuScore + 1;
+                _gameBall.ResetPosition(45, 15);
+                _ballMoving = false;
+            }
+            if(_gameBall.GetX() >= _width - 1){
+                //git player a point
+                _userScore = _userScore + 1;
+                _gameBall.ResetPosition(45, 15);
+                _ballMoving = false;
+            }
+            if(_gameBall.GetX() == 4){
+                if(_gameBall.GetY() > _userPaddle.GetY() - 1 && _gameBall.GetY() < _userPaddle.GetY() + 7){
                     _gameBall.BounceHorizontal();
                 }
             }
-            if(_gameBall.GetX() >= _width - 5){
-                if(_gameBall.GetY() > _cpuPaddle.GetY() && _gameBall.GetY() < _cpuPaddle.GetY() + 6){
+            if(_gameBall.GetX() == _width - 4){
+                if(_gameBall.GetY() > _cpuPaddle.GetY() - 1 && _gameBall.GetY() < _cpuPaddle.GetY() + 7){
                     _gameBall.BounceHorizontal();
                 }
             }
             _gameBall.Move();
             _ballTimer = 0;
-            if(_gameBall.GetX() <= 0){
-                //give cpu player a point
-                _cpuScore = _cpuScore + 1;
-                _gameBall.ResetPosition(53, 15);
-                _ballMoving = false;
-            }
-            if(_gameBall.GetX() >= _width + 1){
-                //git player a point
-                _userScore = _userScore + 1;
-                _gameBall.ResetPosition(53, 15);
-                _ballMoving = false;
+            
+            //cpu paddle stuff
+            if(_gameBall.GetX() >= _width * 7 / 8 && !_gameBall.MovingLeft()){
+                if(_gameBall.GetY() - 3 > _cpuPaddle.GetY()){
+                    _cpuPaddle.Move(1);
+                }
+                if(_gameBall.GetY() - 3 < _cpuPaddle.GetY()){
+                    _cpuPaddle.Move(-1);
+                } 
             }
         }
         _ballTimer++;
