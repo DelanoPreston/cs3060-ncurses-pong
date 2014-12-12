@@ -43,10 +43,11 @@ void Game::Initialize() {
     curs_set(0);
     RenderBoard();
 
-    _gameBall.Init(53, 15, 1, _height + 1, 0, _width);
+    _gameBall.Init(53, 15, 1, _height + 1);
     _userPaddle.Init(3, 10, _height, 3);
     _cpuPaddle.Init(_width-3, 10, _height, 3);
     _playing = true;
+    _ballMoving = false;
     _userScore = _cpuScore = 0;
 }
 
@@ -71,16 +72,43 @@ void Game::Loop() {
         case Down:
             _userPaddle.Move(1);
             break;
+        case Start:
+            _ballMoving = true;
         default:
             break;
     }
     
-    if(_ballTimer >= _ballMove){    
-        _gameBall.Move();
-        _ballTimer = 0;
+    if(_ballMoving){
+        if(_ballTimer >= _ballMove){    
+            if(_gameBall.GetX() <= 5){
+                if(_gameBall.GetY() > _userPaddle.GetY() && _gameBall.GetY() < _userPaddle.GetY() + 6){
+                    _gameBall.BounceHorizontal();
+                }
+            }
+            if(_gameBall.GetX() >= _width - 5){
+                if(_gameBall.GetY() > _cpuPaddle.GetY() && _gameBall.GetY() < _cpuPaddle.GetY() + 6){
+                    _gameBall.BounceHorizontal();
+                }
+            }
+            _gameBall.Move();
+            _ballTimer = 0;
+            if(_gameBall.GetX() <= 0){
+                //give cpu player a point
+                _cpuScore = _cpuScore + 1;
+                _gameBall.ResetPosition(53, 15);
+                _ballMoving = false;
+            }
+            if(_gameBall.GetX() >= _width + 1){
+                //git player a point
+                _userScore = _userScore + 1;
+                _gameBall.ResetPosition(53, 15);
+                _ballMoving = false;
+            }
+        }
+        _ballTimer++;
     }
-    _ballTimer++;
     //clear();
+//    RenderBoard();
     RenderScore();
     _gameBall.Render();
     _userPaddle.Render();

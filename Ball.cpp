@@ -14,15 +14,13 @@ Ball::Ball() {
 }
 
 
-void Ball::Init(int x, int y, int upperBound, int lowerBound, int leftBound, int rightBound){
+void Ball::Init(int x, int y, int upperBound, int lowerBound){
     _x = x;
     _xLast = x + 1;
     _y = y;
     _yLast = y + 1;
     _upperBound = upperBound;
     _lowerBound = lowerBound;
-    _leftBound = leftBound;
-    _rightBound = rightBound;
     _xDir = rand() % 2 + 1;
     if (rand() % 2 == 0) {
         _xDir = _xDir * -1;
@@ -48,16 +46,23 @@ void Ball::Move(float x, float y) {
     _xLast = _x;
     _yLast = _y;
 
-    if(_x + _xDir >= _rightBound || _x + _xDir <= _leftBound){
-        _xDir = _xDir * -1;
-    }
     if(_y + _yDir <= _upperBound || _y + _yDir >= _lowerBound){
-        _yDir = _yDir * -1;
+        BounceVertical();
     }
 
     _x = _x + _xDir;
     _y = _y + _yDir;
 }
+void Ball::BounceVertical() { _yDir = _yDir * -1; }
+void Ball::BounceHorizontal() { _xDir = _xDir * -1;}
+
+void Ball::ResetPosition(int x, int y){
+    _xLast = _x;
+    _yLast = _y;
+    _x = x;
+    _y = y;
+}
+
 int Ball::GetX() { return _x; }
 int Ball::GetY() { return _y; }
 int Ball::GetUpperBound() { return _upperBound; }
