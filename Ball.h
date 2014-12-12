@@ -32,7 +32,7 @@ public:
     virtual int GetUpperBound();
     virtual int GetLowerBound();
     
-    void Move(float x=NAN, float y=NAN);
+    void Move();
 };
 
 #endif	/* BALL_H */

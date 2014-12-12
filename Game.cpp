@@ -18,7 +18,7 @@ Game::Game() {
     _height = 30;
     _paddleMin = 4;
     _paddleMax = _height - 7;
-    _ballMove = 15000;
+    _ballMove = 10000;
 }
 
 Game::~Game() {
@@ -42,6 +42,11 @@ void Game::Initialize() {
     noecho();
     curs_set(0);
     RenderBoard();
+
+    init_pair(0, COLOR_WHITE, COLOR_BLACK);    
+    init_pair(1, COLOR_GREEN, COLOR_WHITE);
+    init_pair(2, COLOR_RED, COLOR_BLACK);
+    init_pair(3, COLOR_CYAN, COLOR_BLACK);
 
     _gameBall.Init(45, 15, 2, _height);
     _userPaddle.Init(3, 10, _height, 3);
@@ -85,32 +90,30 @@ void Game::Loop() {
                 _cpuScore = _cpuScore + 1;
                 _gameBall.ResetPosition(45, 15);
                 _ballMoving = false;
-            }
-            if(_gameBall.GetX() >= _width - 1){
+            } else if(_gameBall.GetX() >= _width - 1){
                 //git player a point
                 _userScore = _userScore + 1;
                 _gameBall.ResetPosition(45, 15);
                 _ballMoving = false;
-            }
-            if(_gameBall.GetX() == 4){
-                if(_gameBall.GetY() > _userPaddle.GetY() - 1 && _gameBall.GetY() < _userPaddle.GetY() + 7){
-                    _gameBall.BounceHorizontal();
+            } else {
+                if(_gameBall.GetX() == 4){
+                    if(_gameBall.GetY() > _userPaddle.GetY() - 1 && _gameBall.GetY() < _userPaddle.GetY() + 7){
+                        _gameBall.BounceHorizontal();
+                    }
+                } else if(_gameBall.GetX() == _width - 4){
+                    if(_gameBall.GetY() > _cpuPaddle.GetY() - 1 && _gameBall.GetY() < _cpuPaddle.GetY() + 7){
+                        _gameBall.BounceHorizontal();
+                    }
                 }
+                _gameBall.Move();
+                _ballTimer = 0;
             }
-            if(_gameBall.GetX() == _width - 4){
-                if(_gameBall.GetY() > _cpuPaddle.GetY() - 1 && _gameBall.GetY() < _cpuPaddle.GetY() + 7){
-                    _gameBall.BounceHorizontal();
-                }
-            }
-            _gameBall.Move();
-            _ballTimer = 0;
-            
+
             //cpu paddle stuff
-            if(_gameBall.GetX() >= _width * 7 / 8 && !_gameBall.MovingLeft()){
+            if(_gameBall.GetX() >= _width * 3 / 4 && !_gameBall.MovingLeft()){
                 if(_gameBall.GetY() - 3 > _cpuPaddle.GetY()){
                     _cpuPaddle.Move(1);
-                }
-                if(_gameBall.GetY() - 3 < _cpuPaddle.GetY()){
+                } else if(_gameBall.GetY() - 3 < _cpuPaddle.GetY()){
                     _cpuPaddle.Move(-1);
                 } 
             }
@@ -121,8 +124,11 @@ void Game::Loop() {
 //    RenderBoard();
     RenderScore();
     _gameBall.Render();
+
+    attrset(COLOR_PAIR(3));
     _userPaddle.Render();
     _cpuPaddle.Render();
+    attrset(COLOR_PAIR(0));
     //refresh();
 }
 
@@ -153,8 +159,24 @@ void Game::RenderScore() {
     mvaddstr(1, 7, "   ");
     mvaddstr(1, _width-8, "   ");
     char buffer[10];
+    
+    if(_userScore >= _cpuScore){
+        attrset(COLOR_PAIR(1));
+    } else {
+        attrset(COLOR_PAIR(2));
+    }
     sprintf(buffer, "%d", _userScore);
-    mvaddstr(1, 7, buffer);
+    move(1,7);
+    printw(buffer);
+//    mvaddstr(1, 7, buffer);
+    if(_userScore <= _cpuScore){
+        attrset(COLOR_PAIR(1));
+    } else {
+        attrset(COLOR_PAIR(2));
+    }
     sprintf(buffer, "%d", _cpuScore);
-    mvaddstr(1, _width-8, buffer);    
+    move(1, _width-8);
+    printw(buffer);
+    
+    attrset(COLOR_PAIR(0));
 }

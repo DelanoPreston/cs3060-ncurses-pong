@@ -35,7 +35,7 @@ void Ball::Render() {
     mvaddstr(_yLast, _xLast, " ");
 }
 
-void Ball::Move(float x, float y) {
+void Ball::Move() {
     _xLast = _x;
     _yLast = _y;
 
