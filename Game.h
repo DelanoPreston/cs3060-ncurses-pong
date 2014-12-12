@@ -22,7 +22,7 @@ private:
     UserInput _input;
     WINDOW* _mainwin;
     bool _playing;
-    int _userScore, _cpuScore;
+    int _userScore, _cpuScore, _ballTimer, _ballMove;
     int _width, _height, _paddleMin, _paddleMax;
     
 public:

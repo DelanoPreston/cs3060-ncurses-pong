@@ -1,5 +1,5 @@
 
-BUILD_CMD=g++ -c -g 
+BUILD_CMD=g++ -c -g
 LINK_CMD=g++ 
 
 objects=ball.o game.o main.o paddle.o userinput.o 

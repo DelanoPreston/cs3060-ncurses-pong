@@ -13,13 +13,15 @@
 
 class Ball : public IRenderable {
 private:
-    int _x, _y, _upperBound, _lowerBound;
+    int _x, _y, _xLast, _yLast, _xDir, _yDir, _upperBound, _lowerBound, _rightBound, _leftBound;
     
 public:
     Ball();
     Ball(const Ball& orig);
+    void Init(int x, int y, int upperBound, int lowerBound, int leftBound, int rightBound);
     virtual ~Ball();
-
+    
+    
     virtual void Render();
     virtual int GetX();
     virtual int GetY();

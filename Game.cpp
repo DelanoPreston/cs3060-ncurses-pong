@@ -14,10 +14,11 @@
 Game::Game(const Game& orig) {}
 
 Game::Game() {
-    _width = 120;
+    _width = 90;
     _height = 30;
     _paddleMin = 4;
     _paddleMax = _height - 7;
+    _ballMove = 15000;
 }
 
 Game::~Game() {
@@ -41,7 +42,8 @@ void Game::Initialize() {
     noecho();
     curs_set(0);
     RenderBoard();
-    
+
+    _gameBall.Init(53, 15, 1, _height + 1, 0, _width);
     _userPaddle.Init(3, 10, _height, 3);
     _cpuPaddle.Init(_width-3, 10, _height, 3);
     _playing = true;
@@ -71,8 +73,13 @@ void Game::Loop() {
             break;
         default:
             break;
-    }    
-        
+    }
+    
+    if(_ballTimer >= _ballMove){    
+        _gameBall.Move();
+        _ballTimer = 0;
+    }
+    _ballTimer++;
     //clear();
     RenderScore();
     _gameBall.Render();
